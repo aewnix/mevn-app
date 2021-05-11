@@ -1,8 +1,8 @@
 const Settings = require('../models/settings')
 const History = require('../models/history')
 
-module.exports = class API {
-    // fetch history
+class API {
+    // Fetch history
     static async fetchHistory(req, res) {
         try {
             const result = await History.find();
@@ -25,7 +25,7 @@ module.exports = class API {
     // Save new price settings
     static async updatePrices(req, res) {
         try {
-            let prices = await Settings.findOneAndReplace({type: "priceSettings"}, req.body);
+            await Settings.findOneAndReplace({type: "priceSettings"}, req.body);
             res.sendStatus(200)
         } catch (err) {
             res.sendStatus(404).json({message: err.message})
@@ -53,7 +53,7 @@ module.exports = class API {
             data.total = ((preTotal + preTotal * extraServices)*data.persons).toFixed(2);
 
             //Save total to database
-            saveToHistory(data);
+            await saveToHistory(data);
             res.status(200).json({total: data.total});
         } catch (err) {
             return res.status(404).json({message: err.message})
@@ -67,14 +67,16 @@ async function getPrices() {
         return Settings.findOne({type: "priceSettings"});
     } catch (err) {
         console.log(err)
+        throw new Error('Unable to get priceSettings');
     }
 }
 
 function addExtraServices(data, prices) {
-    let arr = data.extraServices.map(e => {
-        return prices[data.timePeriod][e]
-    });
-    return arr.reduce((a, b) => a + b, 0)
+    return data.extraServices
+        .map(e => {
+            return prices[data.timePeriod][e]
+        })
+        .reduce((a, b) => a + b, 0);
 }
 
 function getDateRange(a, b) {
@@ -90,5 +92,9 @@ async function saveToHistory(data) {
         await History.create(data);
     } catch (err) {
         console.log(err)
+        throw new Error('Unable to save to History')
     }
 }
+
+
+module.exports = API;
