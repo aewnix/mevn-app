@@ -55,8 +55,6 @@
 </template>
 
 <script>
-// import {reactive} from "vue";
-// import useValidate from "@vuelidate/core";
 import API from "@/api";
 
 export default {
@@ -64,7 +62,10 @@ export default {
   data() {
     return {
       isOpened: false,
-      prices: {},
+      prices: {
+        short: {},
+        yearly: {},
+      },
     }
   },
   async created() {
@@ -78,29 +79,6 @@ export default {
   }
 
 }
-// export default {
-//   name: "priceSettings",
-//   setup:  function () {
-//     const state = reactive({
-//       isOpened: false,
-//       prices: {},
-//     });
-//     const v$ = useValidate(state);
-//     return {state, v$}
-//   },
-//
-//   // Get prices
-//   async created() {
-//     this.state.prices = await API.getPrices();
-//   },
-//
-//   methods: {
-//     // Handle form
-//     async submitForm() {
-//       await API.updatePrices(this.state.prices);
-//     }
-//   }
-// }
 </script>
 
 <style scoped>
