@@ -3,8 +3,10 @@ const app = express();
 const cors = require('cors');
 const API = require('./controllers/api');
 
+require('dotenv').config();
 require('./db');
-const PORT = 3070;
+
+const PORT = process.env.PORT || 3070;
 
 // Middlewares
 app.use(cors());
