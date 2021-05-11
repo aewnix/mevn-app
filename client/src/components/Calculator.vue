@@ -133,6 +133,8 @@ export default {
         // Get total
         const response = await API.getTotal(this.state.formData);
         this.state.total = response.total
+
+        // TODO: emit event to update history
       } else {
         return false
       }
