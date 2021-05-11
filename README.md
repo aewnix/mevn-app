@@ -1,6 +1,9 @@
-# Client
+# Full stack application with MEVN architecture
+The acronym MEVN stands for MongoDB, Express.js, VueJS, Node.js.
 
+## **Project setup**
 
+### Client
 ```
 npm install
 ```
@@ -9,7 +12,7 @@ npm install
 npm run serve
 ```
 
-# Server
+### Server
 
 ```
 npm install
