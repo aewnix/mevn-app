@@ -1,23 +1,20 @@
-let MongoClient = require('mongodb').MongoClient;
-let url = "mongodb://127.0.0.1:27017/aston-itm-task";
+const mongoose = require('mongoose');
 const Settings = require('./models/settings');
 
-MongoClient.connect(url, function (err, db) {
-    if (err) throw err;
-    console.log("Database created!");
-    db.close();
-});
-const mongoose = require('mongoose');
-
 // DB CONNECTION
+if( !process.env.DB_URI ){
+    throw new Error('Missing env variable DB_URI');
+}
+
 mongoose.connect(process.env.DB_URI, {
     useNewUrlParser: true,
     useUnifiedTopology: true,
     useFindAndModify: true,
     useCreateIndex: true
 }).then(() => {
-    console.log("Connected to database!")
+    console.info("Connected to database!")
     // Create settings/prices object on startup
+    // TODO: create only once on startup instead of @ every boot
     Settings.create({
         type: "priceSettings",
         short: {
@@ -35,8 +32,14 @@ mongoose.connect(process.env.DB_URI, {
             sport: 0.1
         }
 
-    }).then(r => console.log("Settings created\n", r))
+    })
+        .then(r => console.info("Settings created\n", r))
+        .catch((err) => {
+            console.error(err);
+            throw new Error('Unable to create base priceSettings object');
+        });
 }).catch((err) => {
-    console.log(err)
-})
+    console.error(err);
+    throw new Error('Unable to connect to database');
+});
 
